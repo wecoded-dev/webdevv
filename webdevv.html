@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>NEXUS — Future Reimagined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.67/build/spline-viewer.js"></script>
+<style>
+:root{
+  --or:#FF5A1F;--orl:#FF7845;--ord:#CC3A0A;
+  --bk:#080808;--dk:#111111;--dk2:#181818;--dk3:#222222;
+  --gy:#555555;--gyl:#888888;
+  --wh:#FFFFFF;--of:#F5F3EF;--cr:#FAF8F4;
+  --fd:'Bebas Neue',sans-serif;
+  --fh:'Barlow Condensed',sans-serif;
+  --fb:'DM Sans',sans-serif;
+  --fm:'Space Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+body{background:var(--wh);color:var(--bk);font-family:var(--fb);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cdot{width:6px;height:6px;background:var(--or);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99999;transform:translate(-50%,-50%)}
+#cring{width:34px;height:34px;border:1.5px solid var(--or);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .18s,height .18s,opacity .18s,background .18s,border-color .18s;opacity:.5}
+#cring.h{width:58px;height:58px;opacity:1;background:rgba(255,90,31,.08)}
+#cring.d{border-color:rgba(255,255,255,.6)}
+#cring.d.h{background:rgba(255,90,31,.15)}
+
+/* PRELOADER */
+#pre{position:fixed;inset:0;background:var(--bk);z-index:999999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:28px}
+.pre-logo{font-family:var(--fd);font-size:clamp(56px,10vw,110px);letter-spacing:10px;color:var(--wh)}
+.pre-logo em{color:var(--or);font-style:normal}
+.pre-tr{width:220px;height:1px;background:rgba(255,255,255,.1);overflow:hidden}
+.pre-fl{height:100%;width:0%;background:var(--or);transition:width 1.8s cubic-bezier(.77,0,.18,1)}
+.pre-pc{font-family:var(--fm);font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.3)}
+
+/* NAV */
+#nav{position:fixed;top:0;left:0;width:100%;z-index:9000;padding:24px 60px;display:flex;align-items:center;justify-content:space-between;transition:padding .4s,background .4s,border-color .4s}
+#nav.sc{padding:14px 60px;background:rgba(255,255,255,.92);backdrop-filter:blur(24px);border-bottom:1px solid rgba(0,0,0,.07)}
+.nl{font-family:var(--fd);font-size:30px;letter-spacing:5px;color:var(--bk);text-decoration:none}
+.nl em{color:var(--or);font-style:normal}
+.nls{display:flex;gap:40px;list-style:none;align-items:center}
+.nls a{font-family:var(--fm);font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--bk);text-decoration:none;position:relative}
+.nls a::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:1px;background:var(--or);transition:width .3s}
+.nls a:hover::after{width:100%}
+.nc{background:var(--or)!important;color:var(--wh)!important;padding:11px 26px;font-family:var(--fm)!important;font-size:10px!important;letter-spacing:2px;text-transform:uppercase;text-decoration:none;transition:background .3s}
+.nc:hover{background:var(--bk)!important}
+.nc::after{display:none!important}
+.nbg{display:none;flex-direction:column;gap:6px;background:none;border:none;cursor:none;padding:4px}
+.nbg span{width:28px;height:1.5px;background:var(--bk);display:block;transition:all .3s}
+
+/* MOBILE MENU */
+#mm{position:fixed;inset:0;background:var(--bk);z-index:8999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+#mm.op{opacity:1;pointer-events:all}
+#mm ul{list-style:none;text-align:center}
+#mm li{margin-bottom:20px}
+#mm a{font-family:var(--fd);font-size:clamp(42px,8vw,80px);color:var(--wh);text-decoration:none;letter-spacing:3px;transition:color .3s}
+#mm a:hover{color:var(--or)}
+#mcl{position:absolute;top:28px;right:48px;background:none;border:none;font-family:var(--fm);font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.45);text-transform:uppercase;cursor:none}
+
+/* ═══ HERO / SPLINE 1 ═══ */
+#sw1{position:relative;height:320vh}
+#ss1{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--cr)}
+#sb1{position:absolute;inset:0;z-index:1}
+spline-viewer{width:100%;height:100%;display:block}
+.sov{position:absolute;inset:0;pointer-events:none}
+#ov1{z-index:2;background:linear-gradient(110deg,rgba(250,248,244,.93) 0%,rgba(250,248,244,.5) 42%,transparent 66%)}
+.hbox{position:absolute;z-index:4;left:8%;top:50%;transform:translateY(-50%);max-width:640px}
+.heye{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--or);margin-bottom:22px;display:flex;align-items:center;gap:14px}
+.heye::before{content:'';width:36px;height:1px;background:var(--or)}
+.hh1{font-family:var(--fd);font-size:clamp(72px,10.5vw,165px);line-height:.88;letter-spacing:3px;margin-bottom:30px;color:var(--bk)}
+.hh1 .hl{color:var(--or)}
+.hh1 .ol{-webkit-text-stroke:1.5px var(--bk);color:transparent}
+.hp{font-size:16px;line-height:1.78;color:var(--gy);font-weight:300;max-width:430px;margin-bottom:42px}
+.hbt{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.boa{background:var(--or);color:var(--wh);font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:16px 38px;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:10px;position:relative;overflow:hidden;cursor:none}
+.boa .bf{position:absolute;inset:0;background:var(--bk);transform:translateX(-101%);transition:transform .42s cubic-bezier(.77,0,.18,1);z-index:0}
+.boa span,.boa .ms{position:relative;z-index:1}
+.boa:hover .bf{transform:translateX(0)}
+.boa:hover{color:var(--wh)}
+.bow{background:transparent;color:var(--bk);font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:15px 38px;border:1px solid rgba(0,0,0,.22);text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all .3s;cursor:none}
+.bow:hover{background:var(--bk);color:var(--wh);border-color:var(--bk)}
+.sph{position:absolute;z-index:5;opacity:0;pointer-events:none}
+.sph2{right:7%;top:50%;transform:translateY(-50%);text-align:right}
+.sph3{left:8%;bottom:14%;text-align:left}
+.spb{font-family:var(--fd);font-size:clamp(80px,14vw,200px);line-height:1;letter-spacing:4px}
+.sph2 .spb{color:var(--wh)}
+.sph3 .spb{color:var(--or)}
+.spt{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.sph2 .spt{color:rgba(255,255,255,.45)}
+.sph3 .spt{color:rgba(255,90,31,.75)}
+.scue{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sline{width:1px;height:56px;background:linear-gradient(to bottom,transparent,var(--or));animation:sla 1.9s ease-in-out infinite}
+@keyframes sla{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+.stxt{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gyl)}
+.hbdg{position:absolute;z-index:6;right:6%;bottom:10%;background:var(--or);padding:14px 22px;display:flex;align-items:center;gap:12px}
+.hbdgt{font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--wh)}
+
+/* MARQUEE */
+.mqstrip{background:var(--bk);padding:20px 0;overflow:hidden}
+.mqt{display:flex;white-space:nowrap;animation:mqa 20s linear infinite}
+.mqt:hover{animation-play-state:paused}
+.mqi{font-family:var(--fd);font-size:17px;letter-spacing:5px;color:rgba(255,255,255,.42);padding:0 44px;text-transform:uppercase}
+.mqi.ac{color:var(--or)}
+@keyframes mqa{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SHARED */
+.sec{position:relative}
+.wrap{max-width:1300px;margin:0 auto;padding:0 60px}
+.stag{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--or);display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.stag::before{content:'';width:24px;height:1px;background:var(--or);flex-shrink:0}
+.sttl{font-family:var(--fd);font-size:clamp(48px,6.5vw,96px);line-height:.93;letter-spacing:2px;color:var(--bk)}
+.sttl .ol{-webkit-text-stroke:1.5px var(--bk);color:transparent}
+.sttl .or{color:var(--or)}
+
+/* ═══ ABOUT ═══ */
+#about{padding:130px 0;background:var(--wh)}
+.abg{display:grid;grid-template-columns:1fr 1.15fr;gap:90px;align-items:center}
+.ast{font-family:var(--fd);font-size:clamp(72px,11vw,176px);line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--or);letter-spacing:2px;margin-bottom:12px}
+.asl{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gyl)}
+.ais{display:flex;flex-direction:column;gap:0;margin-top:40px;border-top:1px solid rgba(0,0,0,.08)}
+.ai{display:flex;align-items:center;gap:20px;padding:22px 0;border-bottom:1px solid rgba(0,0,0,.08)}
+.aic{width:44px;height:44px;background:var(--or);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.aic .material-symbols-outlined{font-size:20px;color:var(--wh)}
+.ain{font-family:var(--fh);font-size:15px;font-weight:600;letter-spacing:1px;color:var(--bk);text-transform:uppercase;margin-bottom:3px}
+.aid{font-size:13px;line-height:1.6;color:var(--gy);font-weight:300}
+.adesc{font-size:17px;line-height:1.82;color:var(--gy);font-weight:300;margin-bottom:36px}
+
+/* ═══ SERVICES ═══ */
+#services{padding:130px 0;background:var(--dk)}
+.srvhd{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:64px;flex-wrap:wrap}
+.srvhd .sttl{color:var(--wh)}
+.srvhd .sttl .ol{-webkit-text-stroke:1.5px rgba(255,255,255,.15);color:transparent}
+.spill{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.38);border:1px solid rgba(255,255,255,.12);padding:10px 22px;background:none;text-decoration:none;white-space:nowrap;transition:all .3s;cursor:none}
+.spill:hover{border-color:var(--or);color:var(--or)}
+.srvg{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+.sc{background:var(--dk2);padding:52px 40px 44px;position:relative;overflow:hidden;transition:background .35s}
+.sc::after{content:'';position:absolute;left:0;top:0;width:3px;height:100%;background:var(--or);transform:scaleY(0);transform-origin:bottom;transition:transform .4s cubic-bezier(.77,0,.18,1)}
+.sc:hover::after{transform:scaleY(1)}
+.sc:hover{background:var(--dk3)}
+.scn{font-family:var(--fd);font-size:68px;line-height:1;color:rgba(255,255,255,.05);margin-bottom:22px;letter-spacing:1px}
+.sci .material-symbols-outlined{font-size:38px;color:var(--or);margin-bottom:22px;display:block}
+.scname{font-family:var(--fh);font-size:21px;font-weight:700;letter-spacing:1.5px;color:var(--wh);text-transform:uppercase;margin-bottom:16px}
+.scp{font-size:14px;line-height:1.78;color:rgba(255,255,255,.52);font-weight:300;margin-bottom:28px}
+.scl{display:inline-flex;align-items:center;gap:8px;font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--or);text-decoration:none;transition:gap .3s}
+.scl:hover{gap:14px}
+.scl .material-symbols-outlined{font-size:15px}
+
+/* ═══ SPLINE 2 ═══ */
+#sw2{position:relative;height:280vh}
+#ss2{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bk)}
+#sb2{position:absolute;inset:0;z-index:1;opacity:.65}
+#ov2{z-index:2;background:linear-gradient(to right,rgba(8,8,8,.88) 0%,rgba(8,8,8,.38) 50%,transparent 78%)}
+.s2c{position:absolute;z-index:4;left:8%;top:50%;transform:translateY(-50%);max-width:580px}
+.s2tg{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--or);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.s2tg::before{content:'';width:24px;height:1px;background:var(--or)}
+.s2h{font-family:var(--fd);font-size:clamp(52px,8vw,120px);line-height:.9;color:var(--wh);letter-spacing:3px;margin-bottom:28px}
+.s2h em{color:var(--or);font-style:normal}
+.s2p{font-size:16px;line-height:1.78;color:rgba(255,255,255,.5);font-weight:300;margin-bottom:40px;max-width:420px}
+.s2sts{display:flex;gap:48px;flex-wrap:wrap}
+.s2sn{font-family:var(--fd);font-size:52px;color:var(--wh);line-height:1}
+.s2sn em{color:var(--or);font-style:normal}
+.s2sl{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.32);margin-top:4px}
+.s2ph{position:absolute;z-index:5;opacity:0;pointer-events:none}
+.s2pa{right:6%;top:38%;transform:translateY(-50%);text-align:right}
+.s2pb{right:6%;bottom:12%;text-align:right}
+.s2phb{font-family:var(--fd);font-size:clamp(60px,10vw,140px);line-height:1;color:transparent;-webkit-text-stroke:1px rgba(255,90,31,.4);letter-spacing:3px}
+.s2phl{font-family:var(--fm);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,90,31,.55);margin-top:8px}
+
+/* ═══ COUNTER ═══ */
+.cnts{background:var(--or);padding:80px 0}
+.cntg{display:grid;grid-template-columns:repeat(4,1fr)}
+.cnti{text-align:center;padding:36px 20px;position:relative}
+.cnti+.cnti::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:1px;height:50%;background:rgba(255,255,255,.25)}
+.cntn{font-family:var(--fd);font-size:clamp(52px,6vw,84px);color:var(--wh);line-height:1;margin-bottom:6px}
+.cntl{font-family:var(--fm);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.62)}
+
+/* ═══ FEATURES / WHY CHOOSE ═══ */
+#features{padding:130px 0;background:var(--cr)}
+.beng{display:grid;grid-template-columns:repeat(12,1fr);gap:16px;margin-top:64px}
+.bc{padding:44px;position:relative;overflow:hidden}
+.bc.B1{grid-column:1/8;background:var(--bk)}
+.bc.B2{grid-column:8/13;background:var(--or)}
+.bc.B3{grid-column:1/5;background:var(--wh)}
+.bc.B4{grid-column:5/9;background:var(--dk);border:1px solid rgba(255,255,255,.04)}
+.bc.B5{grid-column:9/13;background:var(--wh)}
+.bc.B6{grid-column:1/7;background:var(--ord)}
+.bc.B7{grid-column:7/13;background:var(--dk2)}
+/* bento text — explicit per card, nothing hidden */
+.bctg{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
+.bc.B1 .bctg,.bc.B4 .bctg,.bc.B6 .bctg,.bc.B7 .bctg{color:rgba(255,255,255,.4)}
+.bc.B2 .bctg{color:rgba(255,255,255,.65)}
+.bc.B3 .bctg,.bc.B5 .bctg{color:var(--or)}
+.bcbg{font-family:var(--fd);font-size:clamp(30px,3.5vw,56px);line-height:1.02;letter-spacing:1.5px;margin-bottom:16px}
+.bc.B1 .bcbg{color:var(--wh)}
+.bc.B2 .bcbg{color:var(--wh)}
+.bc.B3 .bcbg{color:var(--bk)}
+.bc.B4 .bcbg{color:var(--or)}
+.bc.B5 .bcbg{color:var(--bk)}
+.bc.B6 .bcbg{color:var(--wh)}
+.bc.B7 .bcbg{color:var(--wh)}
+.bcp{font-size:14px;line-height:1.72;font-weight:300}
+.bc.B1 .bcp,.bc.B4 .bcp,.bc.B6 .bcp,.bc.B7 .bcp{color:rgba(255,255,255,.5)}
+.bc.B2 .bcp{color:rgba(255,255,255,.78)}
+.bc.B3 .bcp,.bc.B5 .bcp{color:var(--gy)}
+.bcnum{font-family:var(--fd);font-size:clamp(52px,7vw,96px);line-height:1;margin-bottom:6px}
+.bc.B3 .bcnum{color:var(--bk)}
+.bc.B5 .bcnum{color:var(--bk)}
+.bcnum em{color:var(--or);font-style:normal}
+.bcnl{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase}
+.bc.B3 .bcnl,.bc.B5 .bcnl{color:var(--gyl)}
+.bcico .material-symbols-outlined{font-size:44px;margin-bottom:18px;display:block}
+.bc.B3 .bcico .material-symbols-outlined{color:var(--or)}
+.bc.B5 .bcico .material-symbols-outlined{color:var(--bk)}
+.bcdec{position:absolute;right:-10px;bottom:-14px;font-family:var(--fd);font-size:130px;line-height:1;pointer-events:none;letter-spacing:0}
+.bc.B1 .bcdec{color:rgba(255,255,255,.03)}
+.bc.B2 .bcdec{color:rgba(255,255,255,.08)}
+.bc.B6 .bcdec{color:rgba(0,0,0,.12)}
+/* progress bars */
+.bcbrs{margin-top:24px;display:flex;flex-direction:column;gap:14px}
+.bcbr{display:flex;flex-direction:column;gap:6px}
+.bcbrh{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.bcbrt{height:3px;background:rgba(255,255,255,.08);position:relative;overflow:hidden}
+.bcbrf{height:100%;background:var(--or);width:0%;transition:width 1.4s cubic-bezier(.77,0,.18,1)}
+
+/* ═══ PROCESS ═══ */
+#process{padding:130px 0;background:var(--wh)}
+.prl{margin-top:64px}
+.prr{display:grid;grid-template-columns:88px 1fr;gap:36px;align-items:start;padding:44px 0;border-top:1px solid rgba(0,0,0,.07);position:relative;transition:background .3s}
+.prr:last-child{border-bottom:1px solid rgba(0,0,0,.07)}
+.prr::before{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--or);transition:width .6s cubic-bezier(.77,0,.18,1)}
+.prr.rv::before{width:100%}
+.prnum{font-family:var(--fd);font-size:88px;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(0,0,0,.11)}
+.prinn{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+.prtit{font-family:var(--fh);font-size:32px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--bk);margin-bottom:14px}
+.prp{font-size:15px;line-height:1.78;color:var(--gy);font-weight:300}
+.prtgs{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.prtg{font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--or);border:1px solid rgba(255,90,31,.28);padding:6px 14px;background:rgba(255,90,31,.04)}
+
+/* ═══ SPLINE 3 — TESTIMONIALS ═══ */
+#sw3{position:relative;height:240vh}
+#ss3{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--dk)}
+#sb3{position:absolute;inset:0;z-index:1;opacity:.45}
+#ov3{z-index:2;background:rgba(8,8,8,.6)}
+.s3c{position:absolute;z-index:4;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 8%}
+.s3tg{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--or);display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.s3tg::before{content:'';width:24px;height:1px;background:var(--or)}
+.s3h{font-family:var(--fd);font-size:clamp(40px,5.5vw,80px);line-height:.92;color:var(--wh);letter-spacing:3px;margin-bottom:48px}
+.s3h em{color:var(--or);font-style:normal}
+.trow{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.tc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);padding:38px;position:relative;transition:border-color .3s,background .3s}
+.tc:hover{border-color:rgba(255,90,31,.38);background:rgba(255,90,31,.05)}
+.tcq{position:absolute;top:14px;left:28px;font-family:var(--fd);font-size:88px;color:var(--or);opacity:.12;line-height:1}
+.tcst{color:var(--or);font-size:12px;margin-bottom:18px;letter-spacing:2px}
+.tct{font-size:14px;line-height:1.78;color:rgba(255,255,255,.65);font-weight:300;margin-bottom:28px;position:relative;z-index:1}
+.tcau{display:flex;align-items:center;gap:14px}
+.tcav{width:42px;height:42px;background:var(--or);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:17px;color:var(--wh);letter-spacing:1px;flex-shrink:0}
+.tcan{font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--wh)}
+.tcar{font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.32);margin-top:3px}
+
+/* ═══ TECH STACK ═══ */
+#tech{padding:130px 0;background:var(--wh)}
+.techg{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;margin-top:64px}
+.techl{display:flex;flex-direction:column;gap:0}
+.techi{display:flex;align-items:center;justify-content:space-between;padding:24px 0;border-bottom:1px solid rgba(0,0,0,.07);position:relative;overflow:hidden;cursor:none}
+.techi::before{content:'';position:absolute;left:0;top:0;width:100%;height:100%;background:rgba(255,90,31,.03);transform:translateX(-101%);transition:transform .4s cubic-bezier(.77,0,.18,1)}
+.techi:hover::before{transform:translateX(0)}
+.techil{display:flex;align-items:center;gap:18px}
+.techic{width:40px;height:40px;background:var(--of);display:flex;align-items:center;justify-content:center;transition:background .3s}
+.techi:hover .techic{background:var(--or)}
+.techic .material-symbols-outlined{font-size:20px;color:var(--gy);transition:color .3s}
+.techi:hover .techic .material-symbols-outlined{color:var(--wh)}
+.technm{font-family:var(--fh);font-size:16px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--bk)}
+.techbw{width:120px;height:2px;background:rgba(0,0,0,.08)}
+.techb{height:100%;background:var(--or);width:0%;transition:width 1.2s cubic-bezier(.77,0,.18,1)}
+.techpc{font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--gyl)}
+.techrc{background:var(--bk);padding:56px;position:relative;overflow:hidden}
+.techrc::before{content:'NEXUS';position:absolute;bottom:-20px;right:-10px;font-family:var(--fd);font-size:140px;color:rgba(255,255,255,.03);line-height:1;pointer-events:none}
+.trctg{font-family:var(--fm);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,90,31,.7);margin-bottom:20px}
+.trch{font-family:var(--fd);font-size:clamp(40px,5vw,68px);line-height:.93;color:var(--wh);letter-spacing:2px;margin-bottom:24px}
+.trch em{color:var(--or);font-style:normal}
+.trcp{font-size:15px;line-height:1.78;color:rgba(255,255,255,.42);font-weight:300;margin-bottom:36px}
+
+/* ═══ CTA ═══ */
+#cta{padding:200px 0;background:var(--wh);text-align:center;position:relative;overflow:hidden}
+.ctabw{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:var(--fd);font-size:clamp(80px,18vw,300px);color:transparent;-webkit-text-stroke:1px rgba(0,0,0,.04);white-space:nowrap;letter-spacing:8px;pointer-events:none;will-change:transform}
+.ctain{position:relative;z-index:2}
+.ctah{font-family:var(--fd);font-size:clamp(48px,8.5vw,130px);line-height:.92;color:var(--bk);letter-spacing:2px;margin-bottom:28px}
+.ctah em{color:var(--or);font-style:normal}
+.ctap{font-size:16px;line-height:1.78;color:var(--gy);font-weight:300;max-width:480px;margin:0 auto 52px}
+.ctafrm{display:flex;max-width:500px;margin:0 auto}
+.ctainp{flex:1;padding:18px 22px;border:1px solid rgba(0,0,0,.14);border-right:none;background:transparent;font-family:var(--fb);font-size:14px;color:var(--bk);outline:none;transition:border-color .3s}
+.ctainp:focus{border-color:var(--or)}
+.ctainp::placeholder{color:var(--gyl)}
+.ctasbm{background:var(--or);color:var(--wh);border:none;padding:18px 34px;font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:background .3s;white-space:nowrap}
+.ctasbm:hover{background:var(--bk)}
+
+/* ═══ FOOTER ═══ */
+footer{background:var(--bk);padding:90px 0 44px}
+.ftg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:64px;margin-bottom:64px}
+.flog{font-family:var(--fd);font-size:44px;letter-spacing:5px;color:var(--wh);margin-bottom:18px}
+.flog em{color:var(--or);font-style:normal}
+.fabt{font-size:14px;line-height:1.78;color:rgba(255,255,255,.32);font-weight:300;margin-bottom:30px}
+.fsoc{display:flex;gap:10px}
+.fsb{width:40px;height:40px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .3s,background .3s}
+.fsb:hover{border-color:var(--or);background:rgba(255,90,31,.1)}
+.fsb .material-symbols-outlined{font-size:18px;color:rgba(255,255,255,.45);transition:color .3s}
+.fsb:hover .material-symbols-outlined{color:var(--or)}
+.fct{font-family:var(--fh);font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--wh);margin-bottom:26px}
+.fcl{list-style:none;display:flex;flex-direction:column;gap:12px}
+.fcl a{font-size:13px;color:rgba(255,255,255,.33);text-decoration:none;font-weight:300;transition:color .3s}
+.fcl a:hover{color:var(--or)}
+.fbot{border-top:1px solid rgba(255,255,255,.06);padding-top:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.fcp{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.22)}
+.fbdg{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--or)}
+
+/* RESPONSIVE */
+@media(max-width:1199px){
+  .abg{grid-template-columns:1fr;gap:56px}
+  .srvg{grid-template-columns:repeat(2,1fr)}
+  .beng{grid-template-columns:1fr 1fr}
+  .bc.B1,.bc.B2,.bc.B3,.bc.B4,.bc.B5,.bc.B6,.bc.B7{grid-column:auto}
+  .trow{grid-template-columns:1fr 1fr}
+  .techg{grid-template-columns:1fr;gap:60px}
+  .ftg{grid-template-columns:1fr 1fr;gap:48px}
+  .cntg{grid-template-columns:repeat(2,1fr)}
+  .cnti+.cnti::before{display:none}
+  .cnti{border-bottom:1px solid rgba(255,255,255,.1)}
+}
+@media(max-width:991px){
+  .wrap{padding:0 32px}
+  .nls{display:none}
+  .nbg{display:flex}
+  #nav{padding:20px 32px}
+  #nav.sc{padding:12px 32px}
+  .srvg{grid-template-columns:1fr}
+  .trow{grid-template-columns:1fr}
+  .prinn{grid-template-columns:1fr;gap:24px}
+  .prr{grid-template-columns:56px 1fr;gap:20px}
+  .s2sts{gap:28px}
+  .s3c{padding:0 5%}
+}
+@media(max-width:767px){
+  .wrap{padding:0 24px}
+  .beng{grid-template-columns:1fr}
+  .ftg{grid-template-columns:1fr;gap:36px}
+  .fbot{flex-direction:column;text-align:center}
+  .ctafrm{flex-direction:column}
+  .ctainp{border-right:1px solid rgba(0,0,0,.14);border-bottom:none}
+  .hbox{left:5%;right:5%;max-width:100%}
+  .srvhd{flex-direction:column;align-items:flex-start}
+  .cntg{grid-template-columns:1fr 1fr}
+  .hbdg{right:5%;bottom:6%}
+  .s2c{left:5%;right:5%;max-width:100%}
+}
+@media(max-width:480px){
+  .cntg{grid-template-columns:1fr}
+  .prr{grid-template-columns:1fr;gap:8px}
+  .prnum{font-size:48px}
+  .hh1{font-size:clamp(52px,13vw,100px)}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="pre">
+  <div class="pre-logo">NEX<em>U</em>S</div>
+  <div class="pre-tr"><div class="pre-fl" id="pfl"></div></div>
+  <div class="pre-pc" id="ppc">0%</div>
+</div>
+
+<!-- CURSOR -->
+<div id="cdot"></div><div id="cring"></div>
+
+<!-- MOBILE MENU -->
+<div id="mm">
+  <button id="mcl">✕ Close</button>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#features">Why Us</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#tech">Stack</a></li>
+    <li><a href="#cta">Contact</a></li>
+  </ul>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nl">NEX<em>U</em>S</a>
+  <ul class="nls">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#features">Why Us</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#tech">Stack</a></li>
+    <li><a href="#cta" class="nc">Get Started</a></li>
+  </ul>
+  <button class="nbg" id="nbg"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ══ HERO SPLINE 1 ══ -->
+<div id="sw1">
+  <div id="ss1">
+    <div id="sb1"><spline-viewer url="https://prod.spline.design/mlkX7Boui-duK-s6/scene.splinecode" events-target="global"></spline-viewer></div>
+    <div class="sov" id="ov1"></div>
+    <div class="hbox" id="hbox">
+      <div class="heye">Next Generation Platform</div>
+      <h1 class="hh1"><span class="ol">SHAPE</span><br>THE <span class="hl">FUTURE</span><br><span class="ol">TODAY.</span></h1>
+      <p class="hp">Experience the intersection of cutting-edge technology and breathtaking design — built to push every limit of what's possible.</p>
+      <div class="hbt">
+        <a href="#about" class="boa"><div class="bf"></div><span>Explore Now</span><span class="ms"><span class="material-symbols-outlined" style="font-size:15px;vertical-align:middle">arrow_forward</span></span></a>
+        <a href="#services" class="bow">Our Services</a>
+      </div>
+    </div>
+    <div class="sph sph2" id="sp2"><div class="spt">Innovation Engine</div><div class="spb">3D</div></div>
+    <div class="sph sph3" id="sp3"><div class="spt">Powered by Vision</div><div class="spb">AI</div></div>
+    <div class="scue" id="scue"><div class="sline"></div><span class="stxt">Scroll</span></div>
+    <div class="hbdg"><span class="material-symbols-outlined" style="color:white;font-size:16px">verified</span><span class="hbdgt">Award Winning Design</span></div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div class="mqstrip">
+  <div class="mqt">
+    <span class="mqi">Innovation</span><span class="mqi ac">✦</span><span class="mqi">3D Design</span><span class="mqi ac">✦</span><span class="mqi">Technology</span><span class="mqi ac">✦</span><span class="mqi">Excellence</span><span class="mqi ac">✦</span><span class="mqi">Future</span><span class="mqi ac">✦</span><span class="mqi">Creativity</span><span class="mqi ac">✦</span><span class="mqi">Impact</span><span class="mqi ac">✦</span>
+    <span class="mqi">Innovation</span><span class="mqi ac">✦</span><span class="mqi">3D Design</span><span class="mqi ac">✦</span><span class="mqi">Technology</span><span class="mqi ac">✦</span><span class="mqi">Excellence</span><span class="mqi ac">✦</span><span class="mqi">Future</span><span class="mqi ac">✦</span><span class="mqi">Creativity</span><span class="mqi ac">✦</span><span class="mqi">Impact</span><span class="mqi ac">✦</span>
+  </div>
+</div>
+
+<!-- ══ ABOUT ══ -->
+<section id="about" class="sec">
+  <div class="wrap">
+    <div class="abg">
+      <div>
+        <div class="ast">2024</div>
+        <div class="asl">Year of Founding</div>
+        <div class="ais">
+          <div class="ai"><div class="aic"><span class="material-symbols-outlined">auto_awesome</span></div><div><div class="ain">Immersive 3D</div><div class="aid">Physics-driven interactions built for real-world performance across all devices</div></div></div>
+          <div class="ai"><div class="aic"><span class="material-symbols-outlined">speed</span></div><div><div class="ain">Lightning Speed</div><div class="aid">Sub-100ms response times and 99.99% uptime on every deployment we ship</div></div></div>
+          <div class="ai"><div class="aic"><span class="material-symbols-outlined">architecture</span></div><div><div class="ain">Scalable Systems</div><div class="aid">Architecture that grows with your business without breaking under pressure</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="stag">Who We Are</div>
+        <h2 class="sttl" style="margin-bottom:28px">REDEFINING<br><span class="ol">WHAT'S</span><br><span class="or">POSSIBLE.</span></h2>
+        <p class="adesc">We craft transformative digital experiences where technology becomes art — blending physics-defying 3D environments with purposeful design that drives real business impact at every scale.</p>
+        <a href="#services" class="boa" style="display:inline-flex"><div class="bf"></div><span>Our Services</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section id="services" class="sec">
+  <div class="wrap">
+    <div class="srvhd">
+      <div>
+        <div class="stag" style="color:var(--or)">What We Do</div>
+        <h2 class="sttl" style="color:var(--wh)">OUR <span style="color:var(--or)">CORE</span><br><span style="-webkit-text-stroke:1.5px rgba(255,255,255,.15);color:transparent">SERVICES.</span></h2>
+      </div>
+      <a href="#cta" class="spill">View All Services &rarr;</a>
+    </div>
+    <div class="srvg">
+      <div class="sc"><div class="scn">01</div><div class="sci"><span class="material-symbols-outlined">view_in_ar</span></div><div class="scname">3D Experience Design</div><p class="scp">Craft fully immersive 3D worlds that load fast and feel alive. From product visualizations to spatial narratives that define brand identity and convert visitors into loyal customers.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+      <div class="sc"><div class="scn">02</div><div class="sci"><span class="material-symbols-outlined">psychology</span></div><div class="scname">AI-Powered Solutions</div><p class="scp">Harness artificial intelligence to automate workflows, generate insights, and create systems that learn and adapt continuously with your evolving business objectives.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+      <div class="sc"><div class="scn">03</div><div class="sci"><span class="material-symbols-outlined">devices</span></div><div class="scname">Digital Transformation</div><p class="scp">End-to-end digital overhaul — from legacy system modernization to cloud-native architectures that position your organization powerfully for the next decade of growth.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+      <div class="sc"><div class="scn">04</div><div class="sci"><span class="material-symbols-outlined">trending_up</span></div><div class="scname">Growth Engineering</div><p class="scp">Data-driven growth systems that compound results — performance marketing, conversion optimization, and retention mechanics meticulously built to scale exponentially.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+      <div class="sc"><div class="scn">05</div><div class="sci"><span class="material-symbols-outlined">palette</span></div><div class="scname">Brand Identity Systems</div><p class="scp">Visual language, motion systems, and design standards that communicate authority and inspire genuine trust at every touchpoint across every platform you operate on.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+      <div class="sc"><div class="scn">06</div><div class="sci"><span class="material-symbols-outlined">security</span></div><div class="scname">Infrastructure & Security</div><p class="scp">Enterprise-grade security architecture and cloud infrastructure that protects what matters most while consistently delivering the performance your users demand every day.</p><a href="#" class="scl">Learn More <span class="material-symbols-outlined">arrow_forward</span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SPLINE 2 ══ -->
+<div id="sw2">
+  <div id="ss2">
+    <div id="sb2"><spline-viewer url="https://prod.spline.design/mlkX7Boui-duK-s6/scene.splinecode" events-target="global"></spline-viewer></div>
+    <div class="sov" id="ov2"></div>
+    <div class="s2c" id="s2m">
+      <div class="s2tg">The NEXUS Difference</div>
+      <h2 class="s2h">WE BUILD<br><em>TOMORROW</em><br>RIGHT NOW.</h2>
+      <p class="s2p">Every pixel engineered with intention. Every interaction crafted to surprise. Every system built to endure. This is the standard we hold ourselves to — every single project.</p>
+      <div class="s2sts">
+        <div><div class="s2sn">240<em>+</em></div><div class="s2sl">Projects Delivered</div></div>
+        <div><div class="s2sn">98<em>%</em></div><div class="s2sl">Client Satisfaction</div></div>
+        <div><div class="s2sn">48<em>+</em></div><div class="s2sl">Countries Served</div></div>
+      </div>
+    </div>
+    <div class="s2ph s2pa" id="s2pa"><div class="s2phb">VISION</div><div class="s2phl">Design Philosophy</div></div>
+    <div class="s2ph s2pb" id="s2pb"><div class="s2phb">BUILD</div><div class="s2phl">Engineering Craft</div></div>
+  </div>
+</div>
+
+<!-- COUNTER STRIP -->
+<div class="cnts">
+  <div class="wrap">
+    <div class="cntg">
+      <div class="cnti"><div class="cntn" data-t="240">0</div><div class="cntl">Projects Delivered</div></div>
+      <div class="cnti"><div class="cntn" data-t="98">0</div><div class="cntl">Client Satisfaction %</div></div>
+      <div class="cnti"><div class="cntn" data-t="48">0</div><div class="cntl">Countries Served</div></div>
+      <div class="cnti"><div class="cntn" data-t="12">0</div><div class="cntl">Industry Awards</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FEATURES / WHY CHOOSE ══ -->
+<section id="features" class="sec">
+  <div class="wrap">
+    <div class="stag">Why Choose Us</div>
+    <h2 class="sttl" style="margin-bottom:0">THE <span class="or">NEXUS</span><br><span class="ol">ADVANTAGE.</span></h2>
+    <div class="beng">
+      <div class="bc B1">
+        <div class="bctg">Core Technology</div>
+        <div class="bcbg">Engineered for the Edge of Possibility</div>
+        <p class="bcp">Every system designed from the ground up to handle tomorrow's challenges — modular, scalable, and built for the decade ahead.</p>
+        <div class="bcbrs">
+          <div class="bcbr"><div class="bcbrh"><span>Performance</span><span>97%</span></div><div class="bcbrt"><div class="bcbrf" data-w="97"></div></div></div>
+          <div class="bcbr"><div class="bcbrh"><span>Reliability</span><span>99.9%</span></div><div class="bcbrt"><div class="bcbrf" data-w="99"></div></div></div>
+          <div class="bcbr"><div class="bcbrh"><span>Innovation</span><span>94%</span></div><div class="bcbrt"><div class="bcbrf" data-w="94"></div></div></div>
+        </div>
+        <div class="bcdec">N</div>
+      </div>
+      <div class="bc B2">
+        <div class="bctg">Speed Guarantee</div>
+        <div class="bcbg">Zero Latency.<br>Maximum Impact.</div>
+        <p class="bcp">Sub-100ms response times. 99.99% uptime. Performance your users will feel and your metrics will prove beyond all doubt.</p>
+        <div class="bcdec">X</div>
+      </div>
+      <div class="bc B3">
+        <div class="bctg">Delivery Speed</div>
+        <div class="bcico"><span class="material-symbols-outlined">rocket_launch</span></div>
+        <div class="bcnum">2<em>×</em></div>
+        <div class="bcnl">Faster Than Industry Average</div>
+      </div>
+      <div class="bc B4">
+        <div class="bctg">AI Integration</div>
+        <div class="bcbg">AI-Native by Default</div>
+        <p class="bcp">Every project ships with intelligent automation, predictive analytics, and adaptive UX built in — not bolted on as an afterthought.</p>
+      </div>
+      <div class="bc B5">
+        <div class="bctg">Support</div>
+        <div class="bcico"><span class="material-symbols-outlined">support_agent</span></div>
+        <div class="bcnum">24<em>/7</em></div>
+        <div class="bcnl">Expert Support Always On</div>
+      </div>
+      <div class="bc B6">
+        <div class="bctg">Client Results</div>
+        <div class="bcbg">300% average ROI in year one — across every vertical we serve.</div>
+        <div class="bcdec">R</div>
+      </div>
+      <div class="bc B7">
+        <div class="bctg">Global Scale</div>
+        <div class="bcbg">Built for Billions. Ready for You.</div>
+        <p class="bcp">Infrastructure that has served Fortune 500 companies and nimble startups alike — same quality, same commitment, every single time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROCESS ══ -->
+<section id="process" class="sec">
+  <div class="wrap">
+    <div class="stag">How It Works</div>
+    <h2 class="sttl" style="margin-bottom:0">OUR <span class="or">PROVEN</span><br><span class="ol">PROCESS.</span></h2>
+    <div class="prl">
+      <div class="prr" data-pr>
+        <div class="prnum">01</div>
+        <div class="prinn">
+          <div><div class="prtit">Discovery & Strategy</div><p class="prp">Deep-dive workshops to uncover your core business challenges, map the competitive landscape, and forge a strategy that creates real and lasting differentiation in your market.</p><div class="prtgs"><span class="prtg">Research</span><span class="prtg">Strategy</span><span class="prtg">Workshops</span><span class="prtg">Roadmap</span><span class="prtg">Competitive Analysis</span></div></div>
+          <div style="border-left:2px solid rgba(0,0,0,.06);padding-left:48px"><div style="font-family:var(--fd);font-size:clamp(36px,4vw,64px);color:var(--or);line-height:1;margin-bottom:8px">4–6</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gyl)">Week Sprint</div><div style="margin-top:24px;font-size:14px;line-height:1.7;color:var(--gy);font-weight:300">Deliver a complete strategic blueprint covering market positioning, feature prioritization, and technical architecture recommendations.</div></div>
+        </div>
+      </div>
+      <div class="prr" data-pr>
+        <div class="prnum">02</div>
+        <div class="prinn">
+          <div><div class="prtit">Design & Prototype</div><p class="prp">From wireframes to high-fidelity interactive prototypes — iterative design sprints that validate ideas fast and align stakeholders before a single line of code is committed.</p><div class="prtgs"><span class="prtg">UX/UI</span><span class="prtg">3D Design</span><span class="prtg">Prototyping</span><span class="prtg">User Testing</span><span class="prtg">Motion</span></div></div>
+          <div style="border-left:2px solid rgba(0,0,0,.06);padding-left:48px"><div style="font-family:var(--fd);font-size:clamp(36px,4vw,64px);color:var(--or);line-height:1;margin-bottom:8px">2–3</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gyl)">Week Sprint</div><div style="margin-top:24px;font-size:14px;line-height:1.7;color:var(--gy);font-weight:300">Deliver fully interactive prototypes with micro-animations, 3D integrations, and complete responsive behavior across all breakpoints.</div></div>
+        </div>
+      </div>
+      <div class="prr" data-pr>
+        <div class="prnum">03</div>
+        <div class="prinn">
+          <div><div class="prtit">Build & Engineer</div><p class="prp">Production-grade engineering with CI/CD pipelines, automated testing, and code that's clean, documented, and built to last without accumulating crippling technical debt.</p><div class="prtgs"><span class="prtg">Development</span><span class="prtg">CI/CD</span><span class="prtg">Testing</span><span class="prtg">Deployment</span><span class="prtg">Cloud</span></div></div>
+          <div style="border-left:2px solid rgba(0,0,0,.06);padding-left:48px"><div style="font-family:var(--fd);font-size:clamp(36px,4vw,64px);color:var(--or);line-height:1;margin-bottom:8px">6–12</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gyl)">Week Build</div><div style="margin-top:24px;font-size:14px;line-height:1.7;color:var(--gy);font-weight:300">Ship production-ready software with 99.9% test coverage, full documentation, performance benchmarks, and zero known critical vulnerabilities.</div></div>
+        </div>
+      </div>
+      <div class="prr" data-pr>
+        <div class="prnum">04</div>
+        <div class="prinn">
+          <div><div class="prtit">Launch & Scale</div><p class="prp">Measured launch strategies, live performance monitoring dashboards, and ongoing optimization loops that keep your product improving long after go-live day has passed.</p><div class="prtgs"><span class="prtg">Launch</span><span class="prtg">Analytics</span><span class="prtg">Optimization</span><span class="prtg">Growth</span><span class="prtg">Iteration</span></div></div>
+          <div style="border-left:2px solid rgba(0,0,0,.06);padding-left:48px"><div style="font-family:var(--fd);font-size:clamp(36px,4vw,64px);color:var(--or);line-height:1;margin-bottom:8px">∞</div><div style="font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gyl)">Ongoing</div><div style="margin-top:24px;font-size:14px;line-height:1.7;color:var(--gy);font-weight:300">Continuous improvement cycles powered by real user data, A/B testing frameworks, and proactive performance monitoring to keep you ahead.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SPLINE 3 — TESTIMONIALS ══ -->
+<div id="sw3">
+  <div id="ss3">
+    <div id="sb3"><spline-viewer url="https://prod.spline.design/mlkX7Boui-duK-s6/scene.splinecode" events-target="global"></spline-viewer></div>
+    <div class="sov" id="ov3"></div>
+    <div class="s3c" id="s3m">
+      <div class="s3tg">What People Say</div>
+      <h2 class="s3h">CLIENT <em>SUCCESS</em><br>STORIES.</h2>
+      <div class="trow">
+        <div class="tc"><div class="tcq">"</div><div class="tcst">★★★★★</div><p class="tct">Working with NEXUS completely transformed how we present our product. The 3D experience they built generated more leads in one week than we'd seen in the entire previous quarter combined.</p><div class="tcau"><div class="tcav">JK</div><div><div class="tcan">James Kowalski</div><div class="tcar">CEO, Vertex Industries</div></div></div></div>
+        <div class="tc"><div class="tcq">"</div><div class="tcst">★★★★★</div><p class="tct">The team's ability to translate complex technical requirements into breathtaking visual experiences is unlike anything I've encountered. They don't just meet the brief — they consistently shatter it.</p><div class="tcau"><div class="tcav">SA</div><div><div class="tcan">Sofia Adeyemi</div><div class="tcar">CDO, Lumino</div></div></div></div>
+        <div class="tc"><div class="tcq">"</div><div class="tcst">★★★★★</div><p class="tct">Our new platform outperforms the old one by 300% on every single key metric. Every phase was handled with incredible precision and the results speak for themselves — our users absolutely love it.</p><div class="tcau"><div class="tcav">MR</div><div><div class="tcan">Marcus Reyes</div><div class="tcar">VP Product, Quantum Dynamics</div></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TECH STACK ══ -->
+<section id="tech" class="sec">
+  <div class="wrap">
+    <div class="stag">Our Capabilities</div>
+    <h2 class="sttl" style="margin-bottom:0">THE <span class="or">TECH</span><br><span class="ol">STACK.</span></h2>
+    <div class="techg">
+      <div class="techl">
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">view_in_ar</span></div><div class="technm">3D & WebGL</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="95"></div></div><div class="techpc">95%</div></div></div>
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">psychology</span></div><div class="technm">AI / ML</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="91"></div></div><div class="techpc">91%</div></div></div>
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">cloud</span></div><div class="technm">Cloud Infra</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="97"></div></div><div class="techpc">97%</div></div></div>
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">palette</span></div><div class="technm">Motion Design</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="93"></div></div><div class="techpc">93%</div></div></div>
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">security</span></div><div class="technm">Security</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="99"></div></div><div class="techpc">99%</div></div></div>
+        <div class="techi"><div class="techil"><div class="techic"><span class="material-symbols-outlined">analytics</span></div><div class="technm">Data Analytics</div></div><div style="display:flex;align-items:center;gap:14px"><div class="techbw"><div class="techb" data-w="88"></div></div><div class="techpc">88%</div></div></div>
+      </div>
+      <div class="techrc" id="techrc">
+        <div class="trctg">Innovation Index</div>
+        <h3 class="trch">BUILT FOR <em>SCALE</em> FROM DAY ONE.</h3>
+        <p class="trcp">Our full-spectrum technology stack is assembled from battle-tested tools and cutting-edge platforms — giving you the best of stability and bleeding-edge capability in one unified system.</p>
+        <a href="#cta" class="boa" style="display:inline-flex"><div class="bf"></div><span>Start Your Project</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section id="cta" class="sec">
+  <div class="ctabw" id="ctabw">NEXUS</div>
+  <div class="wrap">
+    <div class="ctain">
+      <div class="stag" style="justify-content:center">Ready to Begin?</div>
+      <h2 class="ctah">LET'S BUILD<br>SOMETHING<br><em>ICONIC.</em></h2>
+      <p class="ctap">Join the companies rewriting what's possible. Tell us your vision — we'll engineer the future together from the very first conversation.</p>
+      <div class="ctafrm">
+        <input type="email" class="ctainp" placeholder="Enter your email address"/>
+        <button class="ctasbm">Get Started</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="ftg">
+      <div>
+        <div class="flog">NEX<em>U</em>S</div>
+        <p class="fabt">We build the digital experiences that define the next decade. Bold. Precise. Transformative.</p>
+        <div class="fsoc">
+          <a href="#" class="fsb"><span class="material-symbols-outlined">language</span></a>
+          <a href="#" class="fsb"><span class="material-symbols-outlined">alternate_email</span></a>
+          <a href="#" class="fsb"><span class="material-symbols-outlined">chat_bubble</span></a>
+          <a href="#" class="fsb"><span class="material-symbols-outlined">video_camera_front</span></a>
+        </div>
+      </div>
+      <div><div class="fct">Services</div><ul class="fcl"><li><a href="#">3D Experience Design</a></li><li><a href="#">AI Solutions</a></li><li><a href="#">Digital Transformation</a></li><li><a href="#">Growth Engineering</a></li><li><a href="#">Brand Identity</a></li></ul></div>
+      <div><div class="fct">Company</div><ul class="fcl"><li><a href="#">About NEXUS</a></li><li><a href="#">Case Studies</a></li><li><a href="#">Careers</a></li><li><a href="#">Blog</a></li><li><a href="#">Press</a></li></ul></div>
+      <div><div class="fct">Contact</div><ul class="fcl"><li><a href="#">hello@nexus.studio</a></li><li><a href="#">+1 (888) 000-0000</a></li><li><a href="#">San Francisco, CA</a></li><li><a href="#">New York, NY</a></li><li><a href="#">London, UK</a></li></ul></div>
+    </div>
+    <div class="fbot"><div class="fcp">© 2025 NEXUS Studio — All rights reserved.</div><div class="fbdg">✦ Future Built Here</div></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<script>
+(function(){
+/* ─ PRELOADER ─ */
+const pfl=document.getElementById('pfl'),ppc=document.getElementById('ppc');
+let p=0;
+const iv=setInterval(()=>{
+  p+=Math.random()*16; if(p>=100){p=100;clearInterval(iv);}
+  pfl.style.width=p+'%'; ppc.textContent=Math.floor(p)+'%';
+  if(p===100) setTimeout(()=>gsap.to('#pre',{opacity:0,duration:.7,ease:'power2.inOut',onComplete(){document.getElementById('pre').style.display='none';boot();}}),280);
+},75);
+
+function boot(){
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* LENIS */
+  const lenis=new Lenis({lerp:0.065,smoothWheel:true});
+  lenis.on('scroll',ScrollTrigger.update);
+  gsap.ticker.add(t=>lenis.raf(t*1000));
+  gsap.ticker.lagSmoothing(0);
+
+  /* CURSOR */
+  const dot=document.getElementById('cdot'),ring=document.getElementById('cring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function tc(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;dot.style.left=mx+'px';dot.style.top=my+'px';ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(tc);})();
+  document.querySelectorAll('a,button,.sc,.bc,.tc,.techi,.prr').forEach(el=>{
+    el.addEventListener('mouseenter',()=>ring.classList.add('h'));
+    el.addEventListener('mouseleave',()=>ring.classList.remove('h'));
+  });
+
+  /* NAV */
+  window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('sc',scrollY>40),{passive:true});
+  document.getElementById('nbg').addEventListener('click',()=>document.getElementById('mm').classList.add('op'));
+  document.getElementById('mcl').addEventListener('click',()=>document.getElementById('mm').classList.remove('op'));
+  document.querySelectorAll('#mm a').forEach(a=>a.addEventListener('click',()=>document.getElementById('mm').classList.remove('op')));
+
+  /* HERO ENTRANCE */
+  gsap.timeline({delay:.1})
+    .from('.heye',{y:28,opacity:0,duration:.9,ease:'power3.out'})
+    .from('.hh1 .ol',{y:80,opacity:0,duration:1.1,ease:'power3.out',stagger:.14},'-=.5')
+    .from('.hh1 .hl',{y:80,opacity:0,duration:1.1,ease:'power3.out'},'-=.8')
+    .from('.hp',{y:28,opacity:0,duration:.9,ease:'power3.out'},'-=.55')
+    .from('.hbt > *',{y:26,opacity:0,duration:.8,ease:'power3.out',stagger:.12},'-=.5')
+    .from('.hbdg',{x:40,opacity:0,duration:.9,ease:'power3.out'},'-=.4');
+
+  /* ── SPLINE 1 SCROLL ── */
+  gsap.timeline({scrollTrigger:{trigger:'#sw1',start:'top top',end:'bottom bottom',scrub:1.4}})
+    .to('#hbox',{y:-70,opacity:0,duration:.28},'0')
+    .to('#scue',{opacity:0,duration:.08},'0.02')
+    .to('#ov1',{background:'linear-gradient(110deg,rgba(8,8,8,.74) 0%,rgba(8,8,8,.36) 44%,transparent 68%)',duration:.3},'0.12')
+    .to('#sp2',{opacity:1,duration:.18},'0.17')
+    .to('#sp2',{opacity:0,duration:.18},'0.44')
+    .to('#ov1',{background:'linear-gradient(110deg,rgba(8,8,8,.84) 0%,rgba(8,8,8,.55) 50%,transparent 76%)',duration:.2},'0.48')
+    .to('#sp3',{opacity:1,duration:.18},'0.53')
+    .to('#sp3',{opacity:0,duration:.18},'0.78')
+    .to('#ov1',{background:'linear-gradient(to bottom,rgba(250,248,244,0) 0%,rgba(250,248,244,.97) 100%)',duration:.2},'0.82')
+    .fromTo('#ss1',{scale:1},{scale:1.06,duration:.5,ease:'none'},'0.1')
+    .to('#ss1',{scale:1,duration:.5,ease:'none'},'0.6');
+
+  /* ── SPLINE 2 SCROLL ── */
+  gsap.timeline({scrollTrigger:{trigger:'#sw2',start:'top top',end:'bottom bottom',scrub:1.4}})
+    .from('#s2m',{x:-44,opacity:0,duration:.26},'0')
+    .to('#s2m',{x:44,opacity:0,duration:.26},'0.56')
+    .to('#ov2',{background:'linear-gradient(to right,rgba(8,8,8,.62) 0%,rgba(8,8,8,.24) 50%,transparent 80%)',duration:.3},'0.1')
+    .to('#s2pa',{opacity:1,duration:.18},'0.3')
+    .to('#s2pa',{opacity:0,duration:.15},'0.52')
+    .to('#s2pb',{opacity:1,duration:.18},'0.66')
+    .to('#s2pb',{opacity:0,duration:.15},'0.87')
+    .fromTo('#ss2',{scale:1},{scale:1.05,duration:.5,ease:'none'},'0.06')
+    .to('#ss2',{scale:1,duration:.5,ease:'none'},'0.56');
+
+  /* ── SPLINE 3 SCROLL ── */
+  gsap.timeline({scrollTrigger:{trigger:'#sw3',start:'top top',end:'bottom bottom',scrub:1.4}})
+    .from('#s3m',{y:44,opacity:0,duration:.3},'0')
+    .from('.tc',{y:52,opacity:0,stagger:.09,duration:.3},'0.1')
+    .to('#s3m',{y:-44,opacity:0,duration:.3},'0.72')
+    .fromTo('#ss3',{scale:1},{scale:1.04,duration:.5,ease:'none'},'0')
+    .to('#ss3',{scale:1,duration:.5,ease:'none'},'0.5');
+
+  /* ── SECTION TITLE REVEALS ── */
+  document.querySelectorAll('.sttl,.stag').forEach((el,i)=>{
+    gsap.fromTo(el,{y:50,opacity:0},{scrollTrigger:{trigger:el,start:'top 86%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.95,ease:'power3.out',delay:i*0.03});
+  });
+
+  /* ── ABOUT ── */
+  gsap.fromTo('.ast',{y:60,opacity:0},{scrollTrigger:{trigger:'.ast',start:'top 85%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:1,ease:'power3.out'});
+  gsap.fromTo('.adesc',{y:30,opacity:0},{scrollTrigger:{trigger:'.adesc',start:'top 88%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.9,ease:'power3.out'});
+  document.querySelectorAll('.ai').forEach((el,i)=>{
+    gsap.fromTo(el,{x:-40,opacity:0},{scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none reverse'},x:0,opacity:1,duration:.75,delay:i*0.1,ease:'power3.out'});
+  });
+
+  /* ── SERVICES ── */
+  document.querySelectorAll('.sc').forEach((c,i)=>{
+    gsap.fromTo(c,{y:60,opacity:0},{scrollTrigger:{trigger:c,start:'top 88%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.85,delay:i*0.08,ease:'power3.out'});
+  });
+
+  /* ── COUNTERS ── */
+  document.querySelectorAll('.cntn[data-t]').forEach(el=>{
+    ScrollTrigger.create({trigger:el,start:'top 82%',once:true,onEnter(){
+      const obj={n:0};
+      anime({targets:obj,n:+el.dataset.t,round:1,duration:1800,easing:'easeOutExpo',update(){el.textContent=obj.n;}});
+    }});
+  });
+
+  /* ── COUNTER ITEMS ── */
+  document.querySelectorAll('.cnti').forEach((c,i)=>{
+    gsap.fromTo(c,{y:40,opacity:0},{scrollTrigger:{trigger:c,start:'top 85%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.75,delay:i*0.1,ease:'back.out(1.4)'});
+  });
+
+  /* ── BENTO CARDS ── */
+  document.querySelectorAll('.bc').forEach((c,i)=>{
+    gsap.fromTo(c,{y:50,opacity:0},{scrollTrigger:{trigger:c,start:'top 90%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.8,delay:i*0.07,ease:'power3.out'});
+  });
+
+  /* ── BENTO BARS ── */
+  document.querySelectorAll('.bcbrf[data-w]').forEach(b=>{
+    ScrollTrigger.create({trigger:b,start:'top 88%',once:true,onEnter(){b.style.width=b.dataset.w+'%';}});
+  });
+
+  /* ── PROCESS ROWS ── */
+  document.querySelectorAll('[data-pr]').forEach((r,i)=>{
+    gsap.fromTo(r,{x:-50,opacity:0},{
+      scrollTrigger:{trigger:r,start:'top 82%',toggleActions:'play none none reverse'},
+      x:0,opacity:1,duration:.9,delay:i*0.08,ease:'power3.out',
+      onComplete(){r.classList.add('rv');}
+    });
+  });
+
+  /* ── TECH BARS ── */
+  document.querySelectorAll('.techb[data-w]').forEach(b=>{
+    ScrollTrigger.create({trigger:b,start:'top 85%',once:true,onEnter(){b.style.width=b.dataset.w+'%';}});
+  });
+
+  /* ── TECH RIGHT CARD ── */
+  gsap.fromTo('#techrc',{x:60,opacity:0},{scrollTrigger:{trigger:'#techrc',start:'top 82%',toggleActions:'play none none reverse'},x:0,opacity:1,duration:1,ease:'power3.out'});
+
+  /* ── CTA PARALLAX BG TEXT ── */
+  gsap.to('#ctabw',{scrollTrigger:{trigger:'#cta',start:'top bottom',end:'bottom top',scrub:1.2},x:-100,ease:'none'});
+
+  /* ── CTA form ── */
+  gsap.fromTo('.ctafrm',{scaleX:.92,opacity:0},{scrollTrigger:{trigger:'.ctafrm',start:'top 88%',toggleActions:'play none none reverse'},scaleX:1,opacity:1,duration:.8,ease:'power3.out',transformOrigin:'left center'});
+
+  /* ── FOOTER ── */
+  gsap.fromTo('footer',{y:40,opacity:0},{scrollTrigger:{trigger:'footer',start:'top 92%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:1,ease:'power3.out'});
+
+  /* ── CTA h/p/tag ── */
+  ['.ctah','.ctap'].forEach(s=>{
+    gsap.fromTo(s,{y:40,opacity:0},{scrollTrigger:{trigger:s,start:'top 88%',toggleActions:'play none none reverse'},y:0,opacity:1,duration:.9,ease:'power3.out'});
+  });
+
+  /* ── SPLINE 1 tech section parallax tease ── */
+  gsap.to('#sb1',{scrollTrigger:{trigger:'#about',start:'top bottom',end:'bottom top',scrub:2},y:-60,ease:'none'});
+}
+})();
+</script>
+</body>
+</html>
